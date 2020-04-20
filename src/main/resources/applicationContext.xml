@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <!--*匹配0+个字符-->
+  <context:component-scan base-package="org.tsb.mybatis.**.service.impl"/>
+
+  <bean id="dataSource" class="org.apache.ibatis.datasource.pooled.PooledDataSource">
+    <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+    <property name="url"
+              value="jdbc:mysql://127.0.0.1:3306/mybatis?useUnicode=true
+              &amp;characterEncoding=utf-8
+              &amp;serverTimezone=Asia/Shanghai"/>
+    <property name="username" value="root"/>
+    <property name="password" value="lisago"/>
+  </bean>
+
+  <!--配置用于创建SqlSessionFactory的bean-->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <!--mybatis的配置-->
+    <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    <!--数据源-->
+    <property name="dataSource" ref="dataSource"/>
+    <!--配置SqlSessionFactoryBean扫描xml映射文件的路径-->
+    <property name="mapperLocations">
+      <array>
+        <value>classpath:org/tsb/mybatis/spring/**/mapper/*.xml</value>
+      </array>
+    </property>
+    <!--配置包别名, 以达到省略类包名的功能, 多个逗号分开-->
+    <property name="typeAliasesPackage" value="org.tsb.mybatis.spring.model"/>
+  </bean>
+
+  <!--自动扫描所有的Mapper接口与mapper.xml文件进行关联, 自动创建mapper接口的实例，
+    使用时可以直接注入接口-->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <!--配置基本的包路径, 多个逗号分开-->
+    <property name="basePackage" value="org.tsb.mybatis.spring.web.mapper"/>
+  </bean>
+</beans>

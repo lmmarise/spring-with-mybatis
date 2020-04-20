@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.tsb.mybatis.spring.web.mapper.DictMapper">
+
+  <resultMap id="BaseResultMap" type="org.tsb.mybatis.spring.model.SysDict">
+    <!--@Table sys_dict-->
+    <result property="id" column="id" jdbcType="INTEGER"/>
+    <result property="code" column="code" jdbcType="VARCHAR"/>
+    <result property="name" column="name" jdbcType="VARCHAR"/>
+    <result property="value" column="value" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <sql id="select">
+    select id,
+           code,
+           name,
+           value
+    from mybatis.sys_dict
+  </sql>
+
+  <sql id="bySysDict">
+    <where>
+      <if test="sysDict.id != null">
+        and id = #{sysDict.id}
+      </if>
+      <if test="sysDict.code != null and sysDict.code != ''">
+        and code = #{sysDict.code}
+      </if>
+      <if test="sysDict.name != null and sysDict.name != ''">
+        and name = #{sysDict.name}
+      </if>
+      <if test="sysDict.value != null and sysDict.value != ''">
+        and value = #{sysDict.value}
+      </if>
+    </where>
+  </sql>
+
+  <sql id="limit">
+    <if test="offset != null">
+      limit #{offset}
+    </if>
+    <if test="limit != null">
+      , #{limit}
+    </if>
+  </sql>
+
+  <sql id="limitByRowBounds">
+    <if test="rowBounds.offset != null">
+      limit #{rowBounds.offset}
+    </if>
+    <if test="rowBounds.limit != null">
+      , #{rowBounds.limit}
+    </if>
+  </sql>
+
+  <select id="selectBySysDict" resultMap="BaseResultMap">
+    <include refid="select"/>
+    <include refid="bySysDict"/>
+    <include refid="limit"/>
+  </select>
+
+  <!--查询单个-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    <include refid="select"/>
+    where id = #{id}
+  </select>
+
+  <!--查询指定行数据-->
+  <select id="queryAllByLimit" resultMap="BaseResultMap">
+    <include refid="select"/>
+    <include refid="limit"/>
+  </select>
+
+  <select id="queryBySysDictLimit" resultMap="BaseResultMap">
+    <include refid="select"/>
+    <include refid="bySysDict"/>
+    <include refid="limit"/>
+  </select>
+
+  <!--通过实体作为筛选条件查询-->
+  <select id="queryBySysDict" resultMap="BaseResultMap">
+    <include refid="select"/>
+    <include refid="bySysDict"/>
+  </select>
+
+  <!--新增所有列-->
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into mybatis.sys_dict(code, name, value)
+    values (#{code}, #{name}, #{value})
+  </insert>
+
+  <!--通过主键修改数据-->
+  <update id="update">
+    update mybatis.sys_dict
+    <set>
+      <if test="code != null and code != ''">
+        code = #{code},
+      </if>
+      <if test="name != null and name != ''">
+        name = #{name},
+      </if>
+      <if test="value != null and value != ''">
+        value = #{value},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+  <!--通过主键删除-->
+  <delete id="deleteById">
+    delete
+    from mybatis.sys_dict
+    where id = #{id}
+  </delete>
+
+  <select id="findBySysDict" resultMap="BaseResultMap">
+    select id, code, name, value
+    from sys_dict
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="code != null and code != ''">
+        and code = #{code}
+      </if>
+    </where>
+    order by code, value
+  </select>
+
+  <update id="updateById">
+    update sys_dict
+    set code  = #{code},
+        name  = #{name},
+        value = #{value}
+    where id = #{id}
+  </update>
+</mapper>
